@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data.EntityConfigurations;
 using TaskTracker.Data.Models;
+using TaskTracker.Data.Extensions;
 
 namespace TaskTracker.Data
 {
@@ -30,6 +31,7 @@ namespace TaskTracker.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjectConfiguration).Assembly);
+            modelBuilder.Seed();
         }
     }
 }
