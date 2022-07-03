@@ -15,16 +15,13 @@ namespace TaskTracker.Data
         {
         }
 
+        public TaskTrackerContext(DbContextOptions options)
+            : base(options)
+        {
+        }
+
         public DbSet<Project> Projects { get; set; }
         public DbSet<Task> Tasks { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if(!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS01; Database=TaskTracker; Trusted_Connection=True;");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

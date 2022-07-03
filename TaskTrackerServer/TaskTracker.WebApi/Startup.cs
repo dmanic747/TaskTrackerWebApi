@@ -11,6 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using TaskTracker.Data;
+using TaskTracker.Business.Interfaces;
+using TaskTracker.Business.Repository;
 
 namespace TaskTracker.WebApi
 {
@@ -26,6 +30,10 @@ namespace TaskTracker.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<TaskTrackerContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IProjectRepository, ProjectRepository>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
