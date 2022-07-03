@@ -19,14 +19,31 @@ namespace TaskTracker.Business.Repository
             _context = context;
         }
 
-        public void CreateProject(Project project)
+        public ProjectDto CreateProject(ProjectForCreationDto project)
         {
-            throw new NotImplementedException();
+            var projectToAdd = new Project
+            {
+                ProjectId = Guid.NewGuid(),
+                Name = project.Name,
+                StartDate = project.StartDate,
+                CompletionDate = project.CompletionDate,
+                Priority = project.Priority,
+                Status = project.Status
+            };
+
+            _context.Projects.Add(projectToAdd);
+            _context.SaveChanges();
+
+            return new ProjectDto(projectToAdd);
         }
 
-        public void DeleteProject(Project project)
+        public void DeleteProject(Guid projectId)
         {
-            throw new NotImplementedException();
+            var projectToDelete = _context.Projects.Find(projectId);
+
+            _context.Projects.Remove(projectToDelete);
+
+            _context.SaveChanges();
         }
 
         public IEnumerable<ProjectDto> GetAllProjects()
@@ -65,9 +82,17 @@ namespace TaskTracker.Business.Repository
             return tasksDto;
         }
 
-        public void UpdateProject(Project project)
+        public void UpdateProject(ProjectForUpdateDto project)
         {
-            throw new NotImplementedException();
+            var projectInDb = _context.Projects.Find(project.Id);
+
+            projectInDb.Name = project.Name;
+            projectInDb.StartDate = project.StartDate;
+            projectInDb.CompletionDate = project.CompletionDate;
+            projectInDb.Status = project.Status;
+            projectInDb.Priority = project.Priority;
+
+            _context.SaveChanges();
         }
     }
 }
