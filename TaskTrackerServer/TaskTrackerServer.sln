@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker.Data", "TaskTracker.Data\TaskTracker.Data.csproj", "{C45F0A0B-E863-44F0-BFF1-8BCB43DE77B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTracker.Business", "TaskTracker.Business\TaskTracker.Business.csproj", "{FCA44583-689F-4949-B46F-204EE5E273CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskTracker.Business", "TaskTracker.Business\TaskTracker.Business.csproj", "{FCA44583-689F-4949-B46F-204EE5E273CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskTracker.WebApi", "TaskTracker.WebApi\TaskTracker.WebApi.csproj", "{B6C95E68-A67F-44AC-AE55-7A64F8E9C704}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{FCA44583-689F-4949-B46F-204EE5E273CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCA44583-689F-4949-B46F-204EE5E273CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCA44583-689F-4949-B46F-204EE5E273CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C95E68-A67F-44AC-AE55-7A64F8E9C704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C95E68-A67F-44AC-AE55-7A64F8E9C704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C95E68-A67F-44AC-AE55-7A64F8E9C704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C95E68-A67F-44AC-AE55-7A64F8E9C704}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
