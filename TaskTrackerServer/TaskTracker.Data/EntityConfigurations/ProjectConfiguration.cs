@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TaskTracker.Data.Models;
 using TaskTracker.Data.Enums;
+using System;
 
 namespace TaskTracker.Data.EntityConfigurations
 {
@@ -23,6 +24,10 @@ namespace TaskTracker.Data.EntityConfigurations
                 .Property(project => project.Priority)
                 .IsRequired()
                 .HasDefaultValue(1);
+
+            //builder
+            //    .Property(project => project.ProjectId)
+            //    .HasDefaultValueSql("NEWID()");
         }
     }
 }

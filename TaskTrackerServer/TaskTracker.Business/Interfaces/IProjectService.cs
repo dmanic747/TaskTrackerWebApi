@@ -6,7 +6,7 @@ using TaskTracker.Business.DTOs;
 
 namespace TaskTracker.Business.Interfaces
 {
-    public interface IProjectRepository
+    public interface IProjectService
     {
         IEnumerable<ProjectDto> GetAllProjects();
         ProjectDto GetProjectById(Guid projectId);
@@ -14,5 +14,7 @@ namespace TaskTracker.Business.Interfaces
         ProjectDto CreateProject(ProjectForCreationDto project);
         void UpdateProject(ProjectForUpdateDto project);
         void DeleteProject(Guid projectId);
+        bool IsProjectExists(Guid projectId);
+        ProjectDto AddTasksToProject(Guid projectId, IEnumerable<TaskForCreationDto> tasks);
     }
 }

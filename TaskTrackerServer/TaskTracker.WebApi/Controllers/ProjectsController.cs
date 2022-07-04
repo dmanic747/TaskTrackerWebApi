@@ -13,9 +13,9 @@ namespace TaskTracker.WebApi.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly IProjectRepository _projectRepository;
+        private readonly IProjectService _projectRepository;
 
-        public ProjectsController(IProjectRepository projectRepository)
+        public ProjectsController(IProjectService projectRepository)
         {
             _projectRepository = projectRepository;
         }
@@ -42,6 +42,9 @@ namespace TaskTracker.WebApi.Controllers
         [HttpGet("{projectId}/tasks")]
         public IActionResult GetProjectTasks(Guid projectId)
         {
+            if (!_projectRepository.IsProjectExists(projectId))
+                return NotFound();
+
             var tasksDto = _projectRepository.GetProjectTasks(projectId);
 
             return Ok(tasksDto);
@@ -91,6 +94,20 @@ namespace TaskTracker.WebApi.Controllers
             _projectRepository.DeleteProject(id);
 
             return NoContent();
+        }
+
+        [HttpPost("{projectId}/tasks")]
+        public IActionResult AddTasksToProject(Guid projectId, [FromBody] IEnumerable<TaskForCreationDto> tasks)
+        {
+            if (tasks == null || !tasks.Any())
+                return BadRequest("Tasks object is null or empty");
+
+            if (!_projectRepository.IsProjectExists(projectId))
+                return BadRequest("Project doesn't exist");
+
+            var projectDto = _projectRepository.AddTasksToProject(projectId, tasks);
+
+            return CreatedAtRoute(nameof(GetProjectById), new { id = projectDto.Id }, projectDto);
         }
     }
 }

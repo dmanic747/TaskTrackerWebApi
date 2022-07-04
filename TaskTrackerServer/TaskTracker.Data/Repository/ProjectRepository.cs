@@ -1,14 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TaskTracker.Business.DTOs;
-using TaskTracker.Business.Interfaces;
-using TaskTracker.Data;
 using TaskTracker.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace TaskTracker.Business.Repository
+namespace TaskTracker.Data.Repository
 {
     public class ProjectRepository : IProjectRepository
     {
@@ -19,22 +16,31 @@ namespace TaskTracker.Business.Repository
             _context = context;
         }
 
-        public ProjectDto CreateProject(ProjectForCreationDto project)
+        public Project AddTasksToProject(Guid projectId, IEnumerable<Task> tasks)
         {
-            var projectToAdd = new Project
-            {
-                ProjectId = Guid.NewGuid(),
-                Name = project.Name,
-                StartDate = project.StartDate,
-                CompletionDate = project.CompletionDate,
-                Priority = project.Priority,
-                Status = project.Status
-            };
+            var projectInDb = _context.Projects
+                .Include(project => project.Tasks)
+                .SingleOrDefault(project => project.ProjectId.Equals(projectId));
 
-            _context.Projects.Add(projectToAdd);
+            foreach (var task in tasks)
+            {
+                task.TaskId = Guid.NewGuid();
+                projectInDb.Tasks.Add(task);
+            }
+
             _context.SaveChanges();
 
-            return new ProjectDto(projectToAdd);
+            return projectInDb;
+        }
+
+        public Project CreateProject(Project project)
+        {
+            project.ProjectId = Guid.NewGuid();
+
+            _context.Projects.Add(project);
+            _context.SaveChanges();
+
+            return project;
         }
 
         public void DeleteProject(Guid projectId)
@@ -46,45 +52,41 @@ namespace TaskTracker.Business.Repository
             _context.SaveChanges();
         }
 
-        public IEnumerable<ProjectDto> GetAllProjects()
+        public IEnumerable<Project> GetAllProjects()
         {
             var projects = _context.Projects
                 .Include(project => project.Tasks)
                 .ToList();
 
-            var projectsDto = projects.Select(project => new ProjectDto(project));
-
-            return projectsDto;
+            return projects;
         }
 
-        public ProjectDto GetProjectById(Guid projectId)
+        public Project GetProjectById(Guid projectId)
         {
             var project = _context.Projects
                 .Include(project => project.Tasks)
                 .SingleOrDefault(project => project.ProjectId.Equals(projectId));
 
-            ProjectDto projectDto = null;
-
-            if (project != null)
-                projectDto = new ProjectDto(project);
-
-            return projectDto;
+            return project;
         }
 
-        public IEnumerable<TaskDto> GetProjectTasks(Guid projectId)
+        public IEnumerable<Task> GetProjectTasks(Guid projectId)
         {
             var projectWithTasks = _context.Projects
                 .Include(project => project.Tasks)
                 .SingleOrDefault(project => project.ProjectId.Equals(projectId));
 
-            var tasksDto = projectWithTasks?.Tasks.Select(task => new TaskDto(task));
-
-            return tasksDto;
+            return projectWithTasks?.Tasks;
         }
 
-        public void UpdateProject(ProjectForUpdateDto project)
+        public bool IsProjectExists(Guid projectId)
         {
-            var projectInDb = _context.Projects.Find(project.Id);
+            return _context.Projects.Any(project => project.ProjectId.Equals(projectId));
+        }
+
+        public void UpdateProject(Project project)
+        {
+            var projectInDb = _context.Projects.Find(project.ProjectId);
 
             projectInDb.Name = project.Name;
             projectInDb.StartDate = project.StartDate;
