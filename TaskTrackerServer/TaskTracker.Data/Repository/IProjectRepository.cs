@@ -15,6 +15,6 @@ namespace TaskTracker.Data.Repository
         void UpdateProject(Project project);
         void DeleteProject(Guid projectId);
         bool IsProjectExists(Guid projectId);
-        Project AddTasksToProject(Guid projectId, IEnumerable<Task> tasks);
+        Project AddTasksToProject(Guid projectId, ICollection<Task> tasks);
     }
 }

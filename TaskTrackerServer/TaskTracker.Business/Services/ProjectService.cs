@@ -21,7 +21,7 @@ namespace TaskTracker.Business.Services
 
         public ProjectDto AddTasksToProject(Guid projectId, IEnumerable<TaskForCreationDto> tasksDto)
         {
-            var tasks = tasksDto.Select(taskDto => taskDto.ToEntity());
+            var tasks = tasksDto.Select(taskDto => taskDto.ToEntity()).ToList();
 
             Project project = _projectRepository.AddTasksToProject(projectId, tasks);
 

@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskTracker.Data;
 using TaskTracker.Business.Interfaces;
 using TaskTracker.Business.Services;
+using TaskTracker.Data.Repository;
 
 namespace TaskTracker.WebApi
 {
@@ -34,6 +35,7 @@ namespace TaskTracker.WebApi
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

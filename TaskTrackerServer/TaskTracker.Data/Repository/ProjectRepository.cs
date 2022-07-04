@@ -16,19 +16,20 @@ namespace TaskTracker.Data.Repository
             _context = context;
         }
 
-        public Project AddTasksToProject(Guid projectId, IEnumerable<Task> tasks)
+        public Project AddTasksToProject(Guid projectId, ICollection<Task> tasks)
         {
-            var projectInDb = _context.Projects
-                .Include(project => project.Tasks)
-                .SingleOrDefault(project => project.ProjectId.Equals(projectId));
-
             foreach (var task in tasks)
             {
                 task.TaskId = Guid.NewGuid();
-                projectInDb.Tasks.Add(task);
+                task.ProjectId = projectId;
             }
 
+            _context.Tasks.AddRange(tasks);
             _context.SaveChanges();
+
+            Project projectInDb = _context.Projects
+                .Include(project => project.Tasks)
+                .SingleOrDefault(project => project.ProjectId.Equals(projectId));
 
             return projectInDb;
         }
