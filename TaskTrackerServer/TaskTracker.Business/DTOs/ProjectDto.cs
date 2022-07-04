@@ -26,7 +26,7 @@ namespace TaskTracker.Business.DTOs
             CompletionDate = project.CompletionDate;
             Status = project.Status;
             Priority = project.Priority;
-            Tasks = project?.Tasks.Select(task => new TaskDto(task));
+            Tasks = project?.Tasks?.Select(task => new TaskDto(task));
         }
     }
 }
