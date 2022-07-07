@@ -85,6 +85,20 @@ namespace TaskTracker.Data.Repository
             return _context.Projects.Any(project => project.ProjectId.Equals(projectId));
         }
 
+        public void RemoveTasksFromProject(Guid projectId, ICollection<Task> tasks)
+        {
+            var project = _context.Projects
+                .Include(project => project.Tasks)
+                .SingleOrDefault(project => project.ProjectId.Equals(projectId));
+
+            var taskIds = tasks.Select(task => task.TaskId).ToList();
+
+            var tasksToRemove = project.Tasks.Where(task => taskIds.Contains(task.TaskId));
+
+            _context.Tasks.RemoveRange(tasksToRemove);
+            _context.SaveChanges();
+        }
+
         public void UpdateProject(Project project)
         {
             var projectInDb = _context.Projects.Find(project.ProjectId);

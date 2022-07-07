@@ -109,5 +109,19 @@ namespace TaskTracker.WebApi.Controllers
 
             return CreatedAtRoute(nameof(GetProjectById), new { id = projectDto.Id }, projectDto);
         }
+
+        [HttpPut("{projectId}/tasks")]
+        public IActionResult RemoveTasksFromProject(Guid projectId, [FromBody] IEnumerable<TaskForDeletionDto> tasks)
+        {
+            if (tasks == null || !tasks.Any())
+                return BadRequest("Tasks object is null or empty");
+
+            if (!_projectService.IsProjectExists(projectId))
+                return BadRequest("Project doesn't exist");
+
+            _projectService.RemoveTasksFromProject(projectId, tasks);
+
+            return NoContent();
+        }
     }
 }

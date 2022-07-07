@@ -16,5 +16,6 @@ namespace TaskTracker.Business.Interfaces
         void DeleteProject(Guid projectId);
         bool IsProjectExists(Guid projectId);
         ProjectDto AddTasksToProject(Guid projectId, IEnumerable<TaskForCreationDto> tasks);
+        void RemoveTasksFromProject(Guid projectId, IEnumerable<TaskForDeletionDto> tasks);
     }
 }

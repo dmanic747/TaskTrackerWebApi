@@ -75,6 +75,13 @@ namespace TaskTracker.Business.Services
             return _projectRepository.IsProjectExists(projectId);
         }
 
+        public void RemoveTasksFromProject(Guid projectId, IEnumerable<TaskForDeletionDto> tasksDto)
+        {
+            var tasks = tasksDto.Select(taskDto => taskDto.ToEntity()).ToList();
+
+            _projectRepository.RemoveTasksFromProject(projectId, tasks);
+        }
+
         public void UpdateProject(ProjectForUpdateDto projectDto)
         {
             _projectRepository.UpdateProject(projectDto.ToEntity());
