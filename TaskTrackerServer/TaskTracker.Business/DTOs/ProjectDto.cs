@@ -18,6 +18,10 @@ namespace TaskTracker.Business.DTOs
         public int Priority { get; set; }
         public IEnumerable<TaskDto> Tasks { get; set; }
 
+        public ProjectDto()
+        {
+        }
+
         public ProjectDto(Project project)
         {
             Id = project.ProjectId;

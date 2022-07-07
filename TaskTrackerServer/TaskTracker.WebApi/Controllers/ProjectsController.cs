@@ -13,17 +13,17 @@ namespace TaskTracker.WebApi.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly IProjectService _projectRepository;
+        private readonly IProjectService _projectService;
 
-        public ProjectsController(IProjectService projectRepository)
+        public ProjectsController(IProjectService projectService)
         {
-            _projectRepository = projectRepository;
+            _projectService = projectService;
         }
 
         [HttpGet]
         public IActionResult GetAllProjects()
         {
-            var projects = _projectRepository.GetAllProjects();
+            var projects = _projectService.GetAllProjects();
 
             return Ok(projects);
         }
@@ -31,7 +31,7 @@ namespace TaskTracker.WebApi.Controllers
         [HttpGet("{id}", Name = "GetProjectById")]
         public IActionResult GetProjectById(Guid id)
         {
-            var projectDto = _projectRepository.GetProjectById(id);
+            var projectDto = _projectService.GetProjectById(id);
 
             if(projectDto == null)
                 return NotFound();
@@ -42,10 +42,10 @@ namespace TaskTracker.WebApi.Controllers
         [HttpGet("{projectId}/tasks")]
         public IActionResult GetProjectTasks(Guid projectId)
         {
-            if (!_projectRepository.IsProjectExists(projectId))
+            if (!_projectService.IsProjectExists(projectId))
                 return NotFound();
 
-            var tasksDto = _projectRepository.GetProjectTasks(projectId);
+            var tasksDto = _projectService.GetProjectTasks(projectId);
 
             return Ok(tasksDto);
         }
@@ -59,7 +59,7 @@ namespace TaskTracker.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid project object");
 
-            var projectDto = _projectRepository.CreateProject(project);
+            var projectDto = _projectService.CreateProject(project);
 
             return CreatedAtRoute("GetProjectById", new { id = projectDto.Id }, projectDto);
         }
@@ -73,12 +73,12 @@ namespace TaskTracker.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid project object");
 
-            var projectDto = _projectRepository.GetProjectById(project.Id);
+            var projectDto = _projectService.GetProjectById(project.Id);
 
             if (projectDto == null)
                 return NotFound();
 
-            _projectRepository.UpdateProject(project);
+            _projectService.UpdateProject(project);
 
             return NoContent();
         }
@@ -86,12 +86,12 @@ namespace TaskTracker.WebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteProject(Guid id)
         {
-            var project = _projectRepository.GetProjectById(id);
+            var project = _projectService.GetProjectById(id);
 
             if (project == null)
                 return NotFound();
 
-            _projectRepository.DeleteProject(id);
+            _projectService.DeleteProject(id);
 
             return NoContent();
         }
@@ -102,10 +102,10 @@ namespace TaskTracker.WebApi.Controllers
             if (tasks == null || !tasks.Any())
                 return BadRequest("Tasks object is null or empty");
 
-            if (!_projectRepository.IsProjectExists(projectId))
+            if (!_projectService.IsProjectExists(projectId))
                 return BadRequest("Project doesn't exist");
 
-            var projectDto = _projectRepository.AddTasksToProject(projectId, tasks);
+            var projectDto = _projectService.AddTasksToProject(projectId, tasks);
 
             return CreatedAtRoute(nameof(GetProjectById), new { id = projectDto.Id }, projectDto);
         }
