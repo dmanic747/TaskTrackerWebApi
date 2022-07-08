@@ -13,6 +13,7 @@ namespace TaskTracker.Data.Repository
         Task<Models.Task> CreateTask(Models.Task task);
         Task UpdateTask(Models.Task task);
         Task DeleteTask(Guid taskId);
+        Task<bool> IsTaskExists(Guid taskId);
 
     }
 }

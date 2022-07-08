@@ -18,7 +18,7 @@ namespace TaskTracker.Business.Services
             _taskRepository = taskRepository;
         }
 
-        public async Task<TaskDto> CreateTask(TaskForCreationDto taskDto)
+        public async Task<TaskDto> CreateTask(TaskDetailsForCreationDto taskDto)
         {
             Data.Models.Task task = await _taskRepository.CreateTask(taskDto.ToEntity());
 
@@ -51,7 +51,12 @@ namespace TaskTracker.Business.Services
             return taskDto;
         }
 
-        public async Task UpdateTask(TaskForUpdateDto taskDto)
+        public async Task<bool> IsTaskExists(Guid taskId)
+        {
+            return await _taskRepository.IsTaskExists(taskId);
+        }
+
+        public async Task UpdateTask(TaskDetailsForUpdateDto taskDto)
         {
             await _taskRepository.UpdateTask(taskDto.ToEntity());
         }

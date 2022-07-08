@@ -11,8 +11,10 @@ namespace TaskTracker.Business.Interfaces
     {
         Task<IEnumerable<TaskDto>> GetAllTasks();
         Task<TaskDto> GetTaskById(Guid taskId);
-        Task<TaskDto> CreateTask(TaskForCreationDto task);
-        Task UpdateTask(TaskForUpdateDto task);
+        Task<TaskDto> CreateTask(TaskDetailsForCreationDto task);
+        Task UpdateTask(TaskDetailsForUpdateDto task);
         Task DeleteTask(Guid taskId);
+
+        Task<bool> IsTaskExists(Guid taskId);
     }
 }

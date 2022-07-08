@@ -53,6 +53,11 @@ namespace TaskTracker.Data.Repository
             return taskInDb;
         }
 
+        public async Task<bool> IsTaskExists(Guid taskId)
+        {
+            return await _context.Tasks.AnyAsync(task => task.TaskId.Equals(taskId));
+        }
+
         public async Task UpdateTask(Models.Task task)
         {
             var taskInDb = await _context.Tasks.FindAsync(task.TaskId);
