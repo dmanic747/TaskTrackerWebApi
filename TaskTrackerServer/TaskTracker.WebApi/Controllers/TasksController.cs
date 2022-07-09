@@ -37,12 +37,12 @@ namespace TaskTracker.WebApi.Controllers
             }
         }
 
-        [HttpGet("{taskId}", Name = "GetTaskById")]
-        public async Task<IActionResult> GetTaskById(Guid taskId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTaskById(Guid id)
         {
             try
             {
-                var taskDto = await _taskService.GetTaskById(taskId);
+                var taskDto = await _taskService.GetTaskById(id);
 
                 if (taskDto == null)
                     return NotFound();
@@ -66,9 +66,9 @@ namespace TaskTracker.WebApi.Controllers
                 if (!_projectService.IsProjectExists(task.ProjectId))
                     return BadRequest("Project doesn't exist");
 
-                 var taskDto = await _taskService.CreateTask(task);
+                var taskDto = await _taskService.CreateTask(task);
 
-                return CreatedAtRoute(nameof(GetTaskById), new { id = taskDto.Id }, taskDto);
+                return CreatedAtAction(nameof(GetTaskById), new { id = taskDto.Id }, taskDto);
             }
             catch (Exception)
             {
@@ -100,7 +100,7 @@ namespace TaskTracker.WebApi.Controllers
             }
         }
 
-        [HttpDelete("taskId")]
+        [HttpDelete("{taskId}")]
         public async Task<IActionResult> DeleteTask(Guid taskId)
         {
             try

@@ -18,26 +18,19 @@ namespace TaskTracker.Data.Repository
 
         public Project AddTasksToProject(Guid projectId, ICollection<Task> tasks)
         {
-            foreach (var task in tasks)
-            {
-                task.TaskId = Guid.NewGuid();
-                task.ProjectId = projectId;
-            }
-
-            _context.Tasks.AddRange(tasks);
-            _context.SaveChanges();
-
             Project projectInDb = _context.Projects
                 .Include(project => project.Tasks)
                 .SingleOrDefault(project => project.ProjectId.Equals(projectId));
+
+            projectInDb.AddTasks(tasks);
+
+            _context.SaveChanges();
 
             return projectInDb;
         }
 
         public Project CreateProject(Project project)
         {
-            project.ProjectId = Guid.NewGuid();
-
             _context.Projects.Add(project);
             _context.SaveChanges();
 
@@ -91,11 +84,8 @@ namespace TaskTracker.Data.Repository
                 .Include(project => project.Tasks)
                 .SingleOrDefault(project => project.ProjectId.Equals(projectId));
 
-            var taskIds = tasks.Select(task => task.TaskId).ToList();
+            project.RemoveTasks(tasks);
 
-            var tasksToRemove = project.Tasks.Where(task => taskIds.Contains(task.TaskId));
-
-            _context.Tasks.RemoveRange(tasksToRemove);
             _context.SaveChanges();
         }
 

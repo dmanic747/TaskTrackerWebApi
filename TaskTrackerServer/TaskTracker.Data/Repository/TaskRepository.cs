@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,21 @@ namespace TaskTracker.Data.Repository
             await _context.SaveChangesAsync();
 
             return task;
+
+            //try
+            //{
+
+            //}
+            //catch (SqlException)
+            //{
+
+            //    return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"Error:{ex.Message}");
+            //    return null;
+            //}
         }
 
         public async Task DeleteTask(Guid taskId)

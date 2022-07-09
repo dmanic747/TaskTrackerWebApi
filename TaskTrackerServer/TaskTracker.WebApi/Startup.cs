@@ -36,7 +36,7 @@ namespace TaskTracker.WebApi
 
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
-            
+
             services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<ITaskRepository, TaskRepository>();
 

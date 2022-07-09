@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TaskTracker.Business.Interfaces;
 using TaskTracker.Business.DTOs;
+//using Microsoft.Extensions.Logging;
 
 namespace TaskTracker.WebApi.Controllers
 {
@@ -14,6 +15,7 @@ namespace TaskTracker.WebApi.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        //private readonly ILogger _logger;
 
         public ProjectsController(IProjectService projectService)
         {
@@ -56,9 +58,6 @@ namespace TaskTracker.WebApi.Controllers
             if (project == null)
                 return BadRequest("Project object is null");
 
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid project object");
-
             var projectDto = _projectService.CreateProject(project);
 
             return CreatedAtRoute("GetProjectById", new { id = projectDto.Id }, projectDto);
@@ -69,9 +68,6 @@ namespace TaskTracker.WebApi.Controllers
         {
             if (project == null)
                 return BadRequest("Project object is null");
-
-            if (!ModelState.IsValid)
-                return BadRequest("Invalid project object");
 
             var projectDto = _projectService.GetProjectById(project.Id);
 
