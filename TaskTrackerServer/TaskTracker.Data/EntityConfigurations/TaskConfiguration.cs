@@ -28,6 +28,10 @@ namespace TaskTracker.Data.EntityConfigurations
                 .Property(task => task.Priority)
                 .IsRequired()
                 .HasDefaultValue(1);
+
+            builder
+                .Property(task => task.TaskId)
+                .HasDefaultValueSql("NEWID()");
         }
     }
 }

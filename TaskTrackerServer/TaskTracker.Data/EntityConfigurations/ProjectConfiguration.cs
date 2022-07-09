@@ -25,9 +25,9 @@ namespace TaskTracker.Data.EntityConfigurations
                 .IsRequired()
                 .HasDefaultValue(1);
 
-            //builder
-            //    .Property(project => project.ProjectId)
-            //    .HasDefaultValueSql("NEWID()");
+            builder
+                .Property(project => project.ProjectId)
+                .HasDefaultValueSql("NEWID()");
         }
     }
 }
