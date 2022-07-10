@@ -7,15 +7,15 @@ using TaskTracker.Data.Enums;
 
 namespace TaskTracker.Data.Filters
 {
-    public class ProjectQuery : ISortable
+    public class ProjectQuery : ISortable, IRangeFilter, IExactValueFilter
     {
         #region Filtering
 
+        public DateTime? StartAt { get; set; }
+        public DateTime? EndAt { get; set; }
         public string Name { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? CompletionDate { get; set; }
-        public ProjectStatus? Status { get; set; }
         public int? Priority { get; set; }
+        public byte? Status { get; set; }
 
         #endregion
 

@@ -64,15 +64,9 @@ namespace TaskTracker.Data.Repository
                 ["priority"] = p => p.Priority
             };
 
+            query = query.ApplyRangeFiltering(projectQuery);
 
-
-            if (projectQuery.Priority.HasValue)
-                query = query.Where(project => project.Priority == projectQuery.Priority.Value);
-
-            if (projectQuery.Status.HasValue)
-                query = query.Where(project => project.Status == projectQuery.Status.Value);
-
-            //query = query.ApplyFiltering(...);
+            query = query.ApplyExactValueFiltering(projectQuery);
 
             query = query.ApplyOrdering(projectQuery, fieldsMapper);
 

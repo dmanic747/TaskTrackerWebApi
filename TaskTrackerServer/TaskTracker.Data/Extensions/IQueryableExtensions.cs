@@ -13,7 +13,6 @@ namespace TaskTracker.Data.Extensions
     {
         public static IQueryable<T> ApplyOrdering<T>(this IQueryable<T> query, ISortable sorter, Dictionary<string, Expression<Func<T, object>>> fieldsMapper)
         {
-
             if (string.IsNullOrWhiteSpace(sorter.SortBy) || !fieldsMapper.ContainsKey(sorter.SortBy))
                 return query;
 
@@ -22,6 +21,42 @@ namespace TaskTracker.Data.Extensions
             else
                 return query.OrderByDescending(fieldsMapper[sorter.SortBy]);
         }
+
+        public static IQueryable<Project> ApplyRangeFiltering(this IQueryable<Project> query, IRangeFilter filter)
+        {
+            if (filter.StartAt.HasValue && filter.EndAt.HasValue)
+            {
+                query = query.Where(project => 
+                    project.StartDate >= filter.StartAt &&
+                    project.CompletionDate <= filter.EndAt);
+            }
+
+            if (filter.StartAt.HasValue)
+                query = query.Where(project => project.StartDate >= filter.StartAt);
+
+
+            if (filter.EndAt.HasValue)
+                query = query.Where(project => project.CompletionDate <= filter.EndAt);
+
+            return query;
+        }
+
+        public static IQueryable<Project> ApplyExactValueFiltering(this IQueryable<Project> query, IExactValueFilter filter)
+        {
+            if (!string.IsNullOrEmpty(filter.Name))
+                query = query.Where(project => 
+                    project.Name.Equals(filter.Name, StringComparison.CurrentCultureIgnoreCase));
+
+            if (filter.Priority.HasValue)
+                query = query.Where(project => project.Priority == filter.Priority.Value);
+
+            if (filter.Status.HasValue)
+                query = query.Where(project => (byte)project.Status == filter.Status.Value);
+
+            return query;
+        }
+
+
 
 
     }

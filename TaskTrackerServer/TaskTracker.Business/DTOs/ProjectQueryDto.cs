@@ -12,8 +12,8 @@ namespace TaskTracker.Business.DTOs
     {
         #region Filtering
         public string Name { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? CompletionDate { get; set; }
+        public DateTime? StartAt { get; set; }
+        public DateTime? EndAt { get; set; }
         public ProjectStatus? Status { get; set; }
         public int? Priority { get; set; }
 
@@ -31,9 +31,9 @@ namespace TaskTracker.Business.DTOs
             return new ProjectQuery
             {
                 Name = Name,
-                StartDate = StartDate,
-                CompletionDate = CompletionDate,
-                Status = Status,
+                StartAt = StartAt,
+                EndAt = EndAt,
+                Status = (byte) Status,
                 Priority = Priority,
                 SortBy = SortBy,
                 IsSortAscending = IsSortAscending
