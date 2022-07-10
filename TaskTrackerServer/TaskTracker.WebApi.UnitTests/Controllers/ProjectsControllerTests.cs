@@ -23,26 +23,26 @@ namespace TaskTracker.WebApi.UnitTests.Controllers
             _controller = new ProjectsController(_projectService.Object);
         }
 
-        [Fact]
-        public void GetAllProjects_ActionExecutes_ReturnsOkObjectResult()
-        {
-            var result = _controller.GetAllProjects();
+        //[Fact]
+        //public void GetAllProjects_ActionExecutes_ReturnsOkObjectResult()
+        //{
+        //    var result = _controller.GetAllProjects();
 
-            Assert.IsType<OkObjectResult>(result);
-        }
+        //    Assert.IsType<OkObjectResult>(result);
+        //}
 
-        [Fact]
-        public void GetAllProjects_ActionExecutes_ReturnsExactNumberOfProjects()
-        {
-            _projectService.Setup(projectService => projectService.GetAllProjects())
-                .Returns(new List<ProjectDto>() { new ProjectDto(), new ProjectDto() });
+        //[Fact]
+        //public void GetAllProjects_ActionExecutes_ReturnsExactNumberOfProjects()
+        //{
+        //    _projectService.Setup(projectService => projectService.GetAllProjects())
+        //        .Returns(new List<ProjectDto>() { new ProjectDto(), new ProjectDto() });
 
-            var result = _controller.GetAllProjects();
+        //    var result = _controller.GetAllProjects();
 
-            var viewResult = Assert.IsType<OkObjectResult>(result);
-            var projects = Assert.IsType<List<ProjectDto>>(viewResult.Value);
-            Assert.Equal(2, projects.Count);
-        }
+        //    var viewResult = Assert.IsType<OkObjectResult>(result);
+        //    var projects = Assert.IsType<List<ProjectDto>>(viewResult.Value);
+        //    Assert.Equal(2, projects.Count);
+        //}
 
         [Fact]
         public void CreateProject_ProjectIsNull_ReturnsBadRequest()

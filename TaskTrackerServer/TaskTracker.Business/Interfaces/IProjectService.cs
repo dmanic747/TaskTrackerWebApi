@@ -8,7 +8,7 @@ namespace TaskTracker.Business.Interfaces
 {
     public interface IProjectService
     {
-        IEnumerable<ProjectDto> GetAllProjects();
+        IEnumerable<ProjectDto> GetAllProjects(ProjectQueryDto queryDto);
         ProjectDto GetProjectById(Guid projectId);
         IEnumerable<TaskDto> GetProjectTasks(Guid projectId);
         ProjectDto CreateProject(ProjectForCreationDto project);

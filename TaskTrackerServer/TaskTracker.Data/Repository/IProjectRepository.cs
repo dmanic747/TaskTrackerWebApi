@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TaskTracker.Data.Filters;
 using TaskTracker.Data.Models;
 
 namespace TaskTracker.Data.Repository
 {
     public interface IProjectRepository
     {
-        IEnumerable<Project> GetAllProjects();
+        IEnumerable<Project> GetAllProjects(ProjectQuery query);
         Project GetProjectById(Guid projectId);
         IEnumerable<Task> GetProjectTasks(Guid projectId);
         Project CreateProject(Project project);

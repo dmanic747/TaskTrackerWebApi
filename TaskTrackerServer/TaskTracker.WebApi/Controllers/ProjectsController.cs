@@ -23,9 +23,9 @@ namespace TaskTracker.WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllProjects()
+        public IActionResult GetAllProjects([FromQuery] ProjectQueryDto filter)
         {
-            var projects = _projectService.GetAllProjects();
+            var projects = _projectService.GetAllProjects(filter);
 
             return Ok(projects);
         }

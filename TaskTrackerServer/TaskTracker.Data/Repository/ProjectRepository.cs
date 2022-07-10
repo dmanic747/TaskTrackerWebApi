@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
-using TaskTracker.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using TaskTracker.Data.Models;
+using TaskTracker.Data.Filters;
+using TaskTracker.Data.Extensions;
 
 namespace TaskTracker.Data.Repository
 {
@@ -46,13 +49,34 @@ namespace TaskTracker.Data.Repository
             _context.SaveChanges();
         }
 
-        public IEnumerable<Project> GetAllProjects()
+        public IEnumerable<Project> GetAllProjects(ProjectQuery projectQuery)
         {
-            var projects = _context.Projects
+            var query = _context.Projects
                 .Include(project => project.Tasks)
-                .ToList();
+                .AsQueryable();
 
-            return projects;
+            var fieldsMapper = new Dictionary<string, Expression<Func<Project, object>>>()
+            {
+                ["name"] = p => p.Name,
+                ["startDate"] = p => p.StartDate,
+                ["completionDate"] = p => p.CompletionDate,
+                ["status"] = p => p.Status,
+                ["priority"] = p => p.Priority
+            };
+
+
+
+            if (projectQuery.Priority.HasValue)
+                query = query.Where(project => project.Priority == projectQuery.Priority.Value);
+
+            if (projectQuery.Status.HasValue)
+                query = query.Where(project => project.Status == projectQuery.Status.Value);
+
+            //query = query.ApplyFiltering(...);
+
+            query = query.ApplyOrdering(projectQuery, fieldsMapper);
+
+            return query.ToList();
         }
 
         public Project GetProjectById(Guid projectId)

@@ -40,9 +40,9 @@ namespace TaskTracker.Business.Services
             _projectRepository.DeleteProject(projectId);
         }
 
-        public IEnumerable<ProjectDto> GetAllProjects()
+        public IEnumerable<ProjectDto> GetAllProjects(ProjectQueryDto queryDto)
         {
-            var projects = _projectRepository.GetAllProjects();
+            var projects = _projectRepository.GetAllProjects(queryDto.ToProjectQuery());
 
             var projectsDto = projects.Select(project => new ProjectDto(project));
 
