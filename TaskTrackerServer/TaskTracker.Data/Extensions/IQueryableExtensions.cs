@@ -26,17 +26,17 @@ namespace TaskTracker.Data.Extensions
         {
             if (filter.StartAt.HasValue && filter.EndAt.HasValue)
             {
-                query = query.Where(project => 
+                return query.Where(project => 
                     project.StartDate >= filter.StartAt &&
                     project.CompletionDate <= filter.EndAt);
             }
 
             if (filter.StartAt.HasValue)
-                query = query.Where(project => project.StartDate >= filter.StartAt);
+                return query.Where(project => project.StartDate == filter.StartAt);
 
 
             if (filter.EndAt.HasValue)
-                query = query.Where(project => project.CompletionDate <= filter.EndAt);
+                return query.Where(project => project.CompletionDate == filter.EndAt);
 
             return query;
         }
@@ -45,7 +45,7 @@ namespace TaskTracker.Data.Extensions
         {
             if (!string.IsNullOrEmpty(filter.Name))
                 query = query.Where(project => 
-                    project.Name.Equals(filter.Name, StringComparison.CurrentCultureIgnoreCase));
+                    project.Name.Equals(filter.Name));
 
             if (filter.Priority.HasValue)
                 query = query.Where(project => project.Priority == filter.Priority.Value);

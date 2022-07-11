@@ -33,7 +33,7 @@ namespace TaskTracker.Business.DTOs
                 Name = Name,
                 StartAt = StartAt,
                 EndAt = EndAt,
-                Status = (byte) Status,
+                Status = (Status.HasValue) ? ((byte) Status) : null,
                 Priority = Priority,
                 SortBy = SortBy,
                 IsSortAscending = IsSortAscending
