@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TaskTracker.Business.Interfaces;
 using TaskTracker.Business.DTOs;
-//using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace TaskTracker.WebApi.Controllers
 {
@@ -15,109 +15,220 @@ namespace TaskTracker.WebApi.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projectService;
-        //private readonly ILogger _logger;
+        private readonly ILogger<ProjectsController> _logger;
 
-        public ProjectsController(IProjectService projectService)
+        public ProjectsController(IProjectService projectService, ILogger<ProjectsController> logger)
         {
             _projectService = projectService;
+            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult GetAllProjects([FromQuery] ProjectQueryDto filter)
         {
-            var projects = _projectService.GetAllProjects(filter);
+            try
+            {
+                var projects = _projectService.GetAllProjects(filter);
 
-            return Ok(projects);
+                _logger.LogInformation("Returned {count} projects from database", projects.Count());
+
+                return Ok(projects);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside GetAllProjects action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
         [HttpGet("{id}", Name = "GetProjectById")]
         public IActionResult GetProjectById(Guid id)
         {
-            var projectDto = _projectService.GetProjectById(id);
+            try
+            {
+                var projectDto = _projectService.GetProjectById(id);
 
-            if(projectDto == null)
-                return NotFound();
+                if(projectDto == null)
+                {
+                    _logger.LogError("Project with id: {projectId} hasn't been found in db", id);
+                    return NotFound();
+                }
 
-            return Ok(projectDto);
+                _logger.LogInformation("Returned project with id: {projectId}", id);
+
+                return Ok(projectDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside GetProjectById action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
         [HttpGet("{projectId}/tasks")]
         public IActionResult GetProjectTasks(Guid projectId)
         {
-            if (!_projectService.IsProjectExists(projectId))
-                return NotFound();
+            try
+            {
+                if (!_projectService.IsProjectExists(projectId))
+                {
+                    _logger.LogError("Project with id: {projectId} doesn't exist in db", projectId);
+                    return NotFound();
+                }
 
-            var tasksDto = _projectService.GetProjectTasks(projectId);
+                var tasksDto = _projectService.GetProjectTasks(projectId);
 
-            return Ok(tasksDto);
+                _logger.LogInformation("Returned tasks for the project with id: {projectId}", projectId);
+
+                return Ok(tasksDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside GetProjectTasks action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
         [HttpPost]
         public IActionResult CreateProject([FromBody] ProjectForCreationDto project)
         {
-            if (project == null)
-                return BadRequest("Project object is null");
+            try
+            {
+                if (project == null)
+                {
+                    _logger.LogError("Project object sent from the client is null");
+                    return BadRequest("Project object is null");
+                }
 
-            var projectDto = _projectService.CreateProject(project);
+                var projectDto = _projectService.CreateProject(project);
 
-            return CreatedAtRoute("GetProjectById", new { id = projectDto.Id }, projectDto);
+                _logger.LogInformation("Created new project with the id: {projectId}", projectDto.Id);
+
+                return CreatedAtRoute("GetProjectById", new { id = projectDto.Id }, projectDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside CreateProject action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
         [HttpPut("{id}")]
         public IActionResult UpdateProject(Guid id, [FromBody] ProjectForUpdateDto project)
         {
-            if (project == null)
-                return BadRequest("Project object is null");
+            try
+            {
+                if (project == null)
+                {
+                    _logger.LogError("Project object sent from the client is null");
+                    return BadRequest("Project object is null");
+                }
 
-            var projectDto = _projectService.GetProjectById(project.Id);
+                var projectDto = _projectService.GetProjectById(project.Id);
 
-            if (projectDto == null)
-                return NotFound();
+                if (projectDto == null)
+                {
+                    _logger.LogError("Project with id: {projectId} hasn't been found in db", id);
+                    return NotFound();
+                }
 
-            _projectService.UpdateProject(project);
+                _projectService.UpdateProject(project);
 
-            return NoContent();
+                _logger.LogInformation("Updated existing project with the id: {projectId}", project.Id);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside UpdateProject action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteProject(Guid id)
         {
-            var project = _projectService.GetProjectById(id);
+            try
+            {
+                var project = _projectService.GetProjectById(id);
 
-            if (project == null)
-                return NotFound();
+                if (project == null)
+                {
+                    _logger.LogError("Project with id: {projectId} hasn't been found in db", id);
+                    return NotFound();
+                }
 
-            _projectService.DeleteProject(id);
+                _projectService.DeleteProject(id);
 
-            return NoContent();
+                _logger.LogInformation("Deleted existing project with the id: {projectId}", id);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside DeleteProject action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
         [HttpPost("{projectId}/tasks")]
         public IActionResult AddTasksToProject(Guid projectId, [FromBody] IEnumerable<TaskForCreationDto> tasks)
         {
-            if (tasks == null || !tasks.Any())
-                return BadRequest("Tasks object is null or empty");
+            try
+            {
+                if (tasks == null || !tasks.Any())
+                {
+                    _logger.LogError("Tasks object sent from the client is null or empty");
+                    return BadRequest("Tasks object is null or empty");
+                }
 
-            if (!_projectService.IsProjectExists(projectId))
-                return BadRequest("Project doesn't exist");
+                if (!_projectService.IsProjectExists(projectId))
+                {
+                    _logger.LogError("Project with id: {projectId} hasn't been found in db", projectId);
+                    return BadRequest("Project doesn't exist");
+                }
 
-            var projectDto = _projectService.AddTasksToProject(projectId, tasks);
+                var projectDto = _projectService.AddTasksToProject(projectId, tasks);
 
-            return CreatedAtRoute(nameof(GetProjectById), new { id = projectDto.Id }, projectDto);
+                _logger.LogInformation("Added tasks to project with id: {projectId}", projectId);
+
+                return CreatedAtRoute(nameof(GetProjectById), new { id = projectDto.Id }, projectDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside AddTasksToProject action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
 
         [HttpPut("{projectId}/tasks")]
         public IActionResult RemoveTasksFromProject(Guid projectId, [FromBody] IEnumerable<TaskForDeletionDto> tasks)
         {
-            if (tasks == null || !tasks.Any())
-                return BadRequest("Tasks object is null or empty");
+            try
+            {
+                if (tasks == null || !tasks.Any())
+                {
+                    _logger.LogError("Tasks object sent from the client is null or empty");
+                    return BadRequest("Tasks object is null or empty");
+                }
 
-            if (!_projectService.IsProjectExists(projectId))
-                return BadRequest("Project doesn't exist");
+                if (!_projectService.IsProjectExists(projectId))
+                {
+                    _logger.LogError("Project with id: {projectId} hasn't been found in db", projectId);
+                    return BadRequest("Project doesn't exist");
+                }
 
-            _projectService.RemoveTasksFromProject(projectId, tasks);
+                _projectService.RemoveTasksFromProject(projectId, tasks);
 
-            return NoContent();
+                _logger.LogInformation("Removed tasks from project with id: {projectId}", projectId);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Something went wrong inside RemoveTasksFromProject action: {message}", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
         }
     }
 }

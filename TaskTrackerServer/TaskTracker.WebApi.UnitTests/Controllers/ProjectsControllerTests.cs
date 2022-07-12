@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,14 @@ namespace TaskTracker.WebApi.UnitTests.Controllers
     public class ProjectsControllerTests
     {
         private readonly Mock<IProjectService> _projectService;
+        private readonly Mock<ILogger<ProjectsController>> _logger;
         private readonly ProjectsController _controller;
 
         public ProjectsControllerTests()
         {
             _projectService = new Mock<IProjectService>();
-            _controller = new ProjectsController(_projectService.Object);
+            _logger = new Mock<ILogger<ProjectsController>>();
+            _controller = new ProjectsController(_projectService.Object, _logger.Object);
         }
 
         //[Fact]
