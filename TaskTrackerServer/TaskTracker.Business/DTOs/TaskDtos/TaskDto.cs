@@ -15,6 +15,10 @@ namespace TaskTracker.Business.DTOs
         public string Description { get; set; }
         public int Priority { get; set; }
 
+        public TaskDto()
+        {
+        }
+
         public TaskDto(Task task)
         {
             Id = task.TaskId;

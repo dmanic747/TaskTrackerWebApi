@@ -27,16 +27,16 @@ namespace TaskTracker.Data.Extensions
             if (filter.StartAt.HasValue && filter.EndAt.HasValue)
             {
                 return query.Where(project => 
-                    project.StartDate >= filter.StartAt &&
-                    project.CompletionDate <= filter.EndAt);
+                    project.StartDate.Date >= filter.StartAt.Value.Date &&
+                    project.CompletionDate.Date <= filter.EndAt.Value.Date);
             }
 
             if (filter.StartAt.HasValue)
-                return query.Where(project => project.StartDate == filter.StartAt);
+                return query.Where(project => project.StartDate.Date == filter.StartAt.Value.Date);
 
 
             if (filter.EndAt.HasValue)
-                return query.Where(project => project.CompletionDate == filter.EndAt);
+                return query.Where(project => project.CompletionDate.Date == filter.EndAt.Value.Date);
 
             return query;
         }
