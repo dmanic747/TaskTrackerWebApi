@@ -19,27 +19,11 @@ namespace TaskTracker.Data.Repository
 
         public async Task<Models.Task> CreateTask(Models.Task task)
         {
-            task.TaskId = Guid.NewGuid();
-
             _context.Tasks.Add(task);
+
             await _context.SaveChangesAsync();
 
             return task;
-
-            //try
-            //{
-
-            //}
-            //catch (SqlException)
-            //{
-
-            //    return null;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine($"Error:{ex.Message}");
-            //    return null;
-            //}
         }
 
         public async Task DeleteTask(Guid taskId)
